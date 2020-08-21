@@ -1,0 +1,13 @@
+version: 0.0.1
+revision: 5
+name: config
+exposes:
+  marvin:
+    targets:
+      main:
+        type: proxy
+        priority: 50
+        upstream: node
+upstreams:
+  node:
+    port: 4000

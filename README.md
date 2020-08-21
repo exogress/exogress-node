@@ -1,1 +1,3 @@
-# exogress-node
+# exogress
+
+Exogress client for node.js
