@@ -1,8 +1,8 @@
 use neon::prelude::*;
 
 struct BackgroundTask {
-    client_id: String,
-    client_secret: String,
+    access_key_id: String,
+    secret_access_key: String,
     account: String,
     project: String,
 }
@@ -13,8 +13,8 @@ impl Task for BackgroundTask {
     type JsEvent = JsUndefined;
 
     fn perform(&self) -> Result<(), String> {
-        exogress_client_lib::spawn(self.client_id.clone(),
-                                   self.client_secret.clone(),
+        exogress_client_lib::spawn(self.access_key_id.clone(),
+                                   self.secret_access_key.clone(),
                                    self.account.clone(),
                                    self.project.clone())
             .map_err(|e| {
@@ -36,14 +36,14 @@ fn spawn(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         .downcast::<JsObject>()
         .unwrap_or(JsObject::new(&mut cx));
 
-    let client_id = js_object
-        .get(&mut cx, "client_id")?
+    let access_key_id = js_object
+        .get(&mut cx, "access_key_id")?
         .downcast::<JsString>()
-        .or_else(|_| cx.throw_error("client_id should be set"))?;
-    let client_secret = js_object
-        .get(&mut cx, "client_secret")?
+        .or_else(|_| cx.throw_error("access_key_id should be set"))?;
+    let secret_access_key = js_object
+        .get(&mut cx, "secret_access_key")?
         .downcast::<JsString>()
-        .or_else(|_| cx.throw_error("client_secret should be set"))?;
+        .or_else(|_| cx.throw_error("secret_access_key should be set"))?;
     let account = js_object
         .get(&mut cx, "account")?
         .downcast::<JsString>()
@@ -59,8 +59,8 @@ fn spawn(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
     let f = cx.argument::<JsFunction>(1)?;
     BackgroundTask {
-        client_id: client_id.value(),
-        client_secret: client_secret.value(),
+        access_key_id: access_key_id.value(),
+        secret_access_key: secret_access_key.value(),
         account: account.value(),
         project: project.value(),
     }.schedule(f);

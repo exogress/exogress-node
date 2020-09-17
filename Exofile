@@ -1,9 +1,9 @@
 version: 0.0.1
-revision: 5
+revision: 1
 name: config
-exposes:
-  marvin:
-    targets:
+mount_points:
+  node:
+    handlers:
       main:
         type: proxy
         priority: 50
