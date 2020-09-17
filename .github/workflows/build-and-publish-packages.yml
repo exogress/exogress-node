@@ -18,9 +18,10 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
-        node-version: [8.x, 10.x, 12.x]
+        node-version: [8.x, 9,x, 10.x, 11.x, 12.x, 13.x, 14.x]
     env:
       RUST_BACKTRACE: 1
+      NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.PAT }}
 
     steps:
       - name: Checkout sources
@@ -38,5 +39,4 @@ jobs:
           override: true
       - run: npm install
       - run: npm test
-        env:
-          CI: true
+      - run: yarn upload-binary
