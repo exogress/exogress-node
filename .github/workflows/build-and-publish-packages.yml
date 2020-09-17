@@ -1,9 +1,13 @@
 name: Build and Publish Binaries
 
+#on:
+#  release:
+#    types:
+#      - created
 on:
-  release:
-    types:
-      - created
+  push:
+    branches:
+      - master
 
 jobs:
   build:
