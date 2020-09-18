@@ -35,15 +35,16 @@ jobs:
         run: |
           npm i -g json
           PACKAGE_VERSION=$(json version -a < package.json)
-          echo "::set-output name=package_version::PACKAGE_VERSION"
+          echo $PACKAGE_VERSION
+          echo "::set-output name=package_version::$PACKAGE_VERSION"
 
       - run: |
           echo "${{ format('v{0}', steps.package-version.package_version) }}"
-          echo "${{ github.event.push.tag.name }}"
+          echo "${{ github.ref }}"
 
       - name: Fail on version missmatch
         run: exit 1
-        if: ${{ format('v{0}', steps.package-version.package_version) != github.event.push.tag.name }}
+        if: ${{ format('v{0}', steps.package-version.package_version) != github.ref }}
 
       - name: Create Release
         id: create_release
