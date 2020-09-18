@@ -88,14 +88,15 @@ jobs:
             target
           key: ${{ runner.os }}-${{ matrix.node-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat
-
       - run: npm test
 
-      - run: neon build --release
+      - run: |
+          npm install -g neon-cli
+          neon build --release
 
       - id: gen-package
         run: |
+          npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
           node-pre-gyp package
 
 #      - name: Upload release
