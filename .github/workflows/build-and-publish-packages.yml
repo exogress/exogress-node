@@ -39,7 +39,7 @@ jobs:
           override: true
       - uses: actions/cache@v2
         with:
-          path: |fix
+          path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
