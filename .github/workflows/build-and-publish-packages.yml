@@ -40,4 +40,4 @@ jobs:
       - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat node-pre-gyp-github
       - run: npm install
       - run: npm test
-      - run: yarn upload-binary
+      - run: npm install -g node-pre-gyp-github && yarn upload-binary
