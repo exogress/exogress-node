@@ -37,7 +37,17 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ runner.node-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat node-pre-gyp-github
       - run: npm install
       - run: npm test
       - run: yarn global add node-pre-gyp-github && yarn global add node-pre-gyp@amilajack/node-pre-gyp#neon-compat && yarn upload-binary
+      - name: Flush the disk cache for macOS
+        if: matrix.os == 'macos-latest'
+        run: sudo /usr/sbin/purge
