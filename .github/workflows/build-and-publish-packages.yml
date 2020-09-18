@@ -30,7 +30,7 @@ jobs:
 
       - id: package-version
         run: |
-          npm i -g json
+          sudo npm i -g json
           PACKAGE_VERSION=$(json version -f package.json)
           echo $PACKAGE_VERSION
           echo "::set-output name=package_version::$PACKAGE_VERSION"
@@ -48,7 +48,6 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: true
-
 
   build:
     needs: check-version
@@ -91,12 +90,12 @@ jobs:
       - run: npm test
 
       - run: |
-          npm install -g neon-cli
+          sudo npm install -g neon-cli
           neon build --release
 
       - id: gen-package
         run: |
-          npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
+          sudo npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
           node-pre-gyp package
 
 #      - name: Upload release
