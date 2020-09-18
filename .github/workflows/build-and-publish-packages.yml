@@ -41,6 +41,7 @@ jobs:
       - run: |
           echo "${{ format('v{0}', steps.package-version.package_version) }}"
           echo "${{ github.ref }}"
+          echo "${{ toJson(github) }}"
 
       - name: Fail on version missmatch
         run: exit 1
