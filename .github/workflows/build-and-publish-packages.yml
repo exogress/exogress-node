@@ -35,6 +35,8 @@ jobs:
         run: |
           npm i -g json
           PACKAGE_VERSION=$(json version -a < package.json)
+          echo "${{ format('v{0}', steps.package-version.package_version) }}"
+          echo "${{ github.event.release.tag_name }}"
           echo "::set-output name=package_version::PACKAGE_VERSION"
 
       - name: Fail on version missmatch
