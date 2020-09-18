@@ -88,7 +88,7 @@ jobs:
             target
           key: ${{ runner.os }}-${{ matrix.node-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat node-pre-gyp-github
+      - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat
 
       - run: npm test
 
@@ -96,20 +96,17 @@ jobs:
 
       - id: gen-package
         run: |
-          PACKAGE_PATH=$(node-pre-gyp package 2>&1|grep "Binary staged"|awk -F " at " '{print $2}'|xargs readlink -f)
-          PACKAGE_NAME=$(basename $PACKAGE_PATH)
-          echo "::set-output name=package_path::$PACKAGE_PATH"
-          echo "::set-output name=package_name::$PACKAGE_NAME"
+          node-pre-gyp package
 
-      - name: Upload release
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.gen-package.outputs.package_path }}
-          asset_name: ${{ steps.pack-deb.outputs.package_name }}
-          asset_content_type: application/gzip
+#      - name: Upload release
+#        uses: actions/upload-release-asset@v1.0.2
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: "build/stage/${{ version }}/node-${{ }}"
+#          asset_name: ${{ steps.pack-deb.outputs.package_name }}
+#          asset_content_type: application/gzip
 
       - name: Flush the disk cache for macOS
         if: matrix.os == 'macos-latest'
