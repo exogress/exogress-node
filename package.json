@@ -1,6 +1,6 @@
 {
   "name": "exogress",
-  "version": "0.1.0",
+  "version": "0.0.1-alpha.1",
   "description": "Exogress client for node.js",
   "main": "lib/index.js",
   "repository": {
@@ -13,12 +13,7 @@
   ],
   "author": "Exogress Team <team@exogress.com>",
   "license": "Apache-2.0",
-  "dependencies": {
-    "express": "^4.17.1",
-    "neon-cli": "^0.4.0",
-    "node-pre-gyp": "amilajack/node-pre-gyp#neon-compat",
-    "node-pre-gyp-github": "^1.4.3"
-  },
+  "dependencies": {},
   "scripts": {
     "install": "node-pre-gyp install --fallback-to-build=false || neon build --release",
     "package": "node-pre-gyp package",

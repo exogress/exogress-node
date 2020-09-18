@@ -37,6 +37,8 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - run: npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
+      - run: npm install -g node-pre-gyp-github
       - run: npm install
       - run: npm test
       - run: yarn upload-binary
