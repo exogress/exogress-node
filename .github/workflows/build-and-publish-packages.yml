@@ -2,9 +2,8 @@ name: Build and Publish Binaries
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*'
 
 jobs:
   check-version:
@@ -31,7 +30,7 @@ jobs:
 
       - id: package-version
         run: |
-          npm i -g json
+          sudo npm i -g json
           PACKAGE_VERSION=$(json version -f package.json)
           echo $PACKAGE_VERSION
           echo "::set-output name=package_version::$PACKAGE_VERSION"
@@ -52,6 +51,7 @@ jobs:
 
 
   build:
+    needs: check-version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -62,7 +62,6 @@ jobs:
         node-version: [12.x, 13.x, 14.x]
     env:
       RUST_BACKTRACE: 1
-      NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.PAT }}
 
     steps:
       - name: Checkout sources
@@ -102,7 +101,7 @@ jobs:
           echo "::set-output name=package_path::$PACKAGE_PATH"
           echo "::set-output name=package_name::$PACKAGE_NAME"
 
-      - name: Upload release deb
+      - name: Upload release
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
