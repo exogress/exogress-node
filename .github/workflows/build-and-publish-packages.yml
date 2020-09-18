@@ -40,12 +40,9 @@ jobs:
       - id: package-version
         run: |
           npm i -g json
-          PACKAGE_VERSION=$(json version -a < package.json)
+          PACKAGE_VERSION=$(json version -f package.json)
           echo $PACKAGE_VERSION
           echo "::set-output name=package_version::$PACKAGE_VERSION"
-
-      - run: |
-          echo "${{ steps.package-version.outputs.package_version != steps.tag-name.outputs.tag }}"
 
       - name: Fail on version missmatch
         run: exit 1
