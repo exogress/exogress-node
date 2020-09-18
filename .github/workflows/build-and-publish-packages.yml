@@ -1,13 +1,10 @@
 name: Build and Publish Binaries
 
-#on:
-#  release:
-#    types:
-#      - created
 on:
   push:
-    branches:
-      - master
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   build:
@@ -28,15 +25,38 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
+      - id: package-version
+        run: |
+          npm i -g json
+          PACKAGE_VERSION=$(json version -a < package.json)
+          echo "::set-output name=package_version::PACKAGE_VERSION"
+
+      - name: Fail on version missmatch
+        run: exit 1
+        if: ${{ format('v{0}', steps.package-version.package_version) != github.event.release.tag_name }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
+
       - uses: actions/cache@v2
         with:
           path: |
@@ -44,10 +64,30 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.node-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
       - run: npm install -g neon-cli node-pre-gyp@amilajack/node-pre-gyp#neon-compat node-pre-gyp-github
-      - run: npm install
+
       - run: npm test
-      - run: yarn global add node-pre-gyp-github && yarn global add node-pre-gyp@amilajack/node-pre-gyp#neon-compat && yarn upload-binary
+
+      - run: neon build --release
+
+      - id: gen-package
+        run: |
+          PACKAGE_PATH=$(node-pre-gyp package 2>&1|grep "Binary staged"|awk -F " at " '{print $2}'|xargs readlink -f)
+          PACKAGE_NAME=$(basename $PACKAGE_PATH)
+          echo "::set-output name=package_path::$PACKAGE_PATH"
+          echo "::set-output name=package_name::$PACKAGE_NAME"
+
+      - name: Upload release deb
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.gen-package.outputs.package_path }}
+          asset_name: ${{ steps.pack-deb.outputs.package_name }}
+          asset_content_type: application/gzip
+
       - name: Flush the disk cache for macOS
         if: matrix.os == 'macos-latest'
         run: sudo /usr/sbin/purge
