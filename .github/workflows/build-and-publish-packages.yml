@@ -61,6 +61,7 @@ jobs:
         node-version: [12.x, 13.x, 14.x]
     env:
       RUST_BACKTRACE: 1
+      NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.PAT }}
 
     steps:
       - name: Checkout sources
@@ -90,23 +91,10 @@ jobs:
       - run: npm test
 
       - run: |
-          sudo npm install -g neon-cli
-          neon build --release
-
-      - id: gen-package
-        run: |
-          sudo npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
-          node-pre-gyp package
-
-#      - name: Upload release
-#        uses: actions/upload-release-asset@v1.0.2
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: "build/stage/${{ version }}/node-${{ }}"
-#          asset_name: ${{ steps.pack-deb.outputs.package_name }}
-#          asset_content_type: application/gzip
+        sudo npm install -g neon-cli
+        sudo npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
+        yarn global add node-pre-gyp-github
+        yarn upload-binary
 
       - name: Flush the disk cache for macOS
         if: matrix.os == 'macos-latest'
