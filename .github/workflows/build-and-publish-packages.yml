@@ -91,10 +91,10 @@ jobs:
       - run: npm test
 
       - run: |
-        sudo npm install -g neon-cli
-        sudo npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
-        yarn global add node-pre-gyp-github
-        yarn upload-binary
+          sudo npm install -g neon-cli
+          sudo npm install -g node-pre-gyp@amilajack/node-pre-gyp#neon-compat
+          yarn global add node-pre-gyp-github
+          yarn upload-binary
 
       - name: Flush the disk cache for macOS
         if: matrix.os == 'macos-latest'
