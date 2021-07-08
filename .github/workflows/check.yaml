@@ -68,7 +68,8 @@ jobs:
       - run: npm run package
       - run: npm run upload-binary
         env:
-          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
+          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.PAT }}
+#          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
 #
 #  manylinux:
