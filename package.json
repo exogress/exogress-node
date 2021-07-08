@@ -1,0 +1,41 @@
+{
+  "name": "exogress",
+  "version": "0.0.1-alpha.1",
+  "description": "Exogress client for Ruby",
+  "main": "index.js",
+  "scripts": {
+    "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics",
+    "install": "node-pre-gyp install --fallback-to-build=false || neon build --release",
+    "package": "node-pre-gyp package",
+    "upload-binary": "node-pre-gyp package && node-pre-gyp-github publish",
+    "test": "cargo test"
+  },
+  "author": "Exogress Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cargo-cp-artifact": "^0.1",
+    "node-pre-gyp-github": "^1.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exogress/exogress-node.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/exogress/exogress-node/issues"
+  },
+  "homepage": "https://github.com/exogress/exogress-node#readme",
+  "dependencies": {
+    "node-pre-gyp": "^0.17.0"
+  },
+  "binary": {
+    "module_name": "index",
+    "host": "https://github.com/exogress/exogress-node/releases/download/",
+    "remote_path": "{version}",
+    "package_name": "{node_abi}-{platform}-{arch}.tar.gz",
+    "module_path": ".",
+    "pkg_path": "."
+  }
+}
