@@ -34,7 +34,7 @@ jobs:
           command: clippy
           args: --all-targets --all-features
 
-  native:
+  build_and_upload_artifacts:
     runs-on: ${{ matrix.os }}
     needs: lint
     strategy:
@@ -63,82 +63,43 @@ jobs:
 
       - run: npm install cargo-cp-artifact --global
       - run: npm install node-pre-gyp --global
-      - run: npm install node-pre-gyp-github --global
       - run: npm run build
       - run: npm run package
-      - run: npm run upload-binary
-        env:
-          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.PAT }}
-#          NODE_PRE_GYP_GITHUB_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
-#
-#  manylinux:
-#    runs-on: ubuntu-latest
-#    needs: lint
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        target: [aarch64, armv7, x86_64, i686]
-#        python: [
-#          { version: '3.6', abi: 'cp36-cp36m' },
-#          { version: '3.7', abi: 'cp37-cp37m' },
-#          { version: '3.8', abi: 'cp38-cp38' },
-#          { version: '3.9', abi: 'cp39-cp39' },
-#        ]
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v1
-#        with:
-#          submodules: true
-#
-#      - uses: messense/maturin-action@v1
+#      - name: Upload release deb
+#        uses: actions/upload-release-asset@v1.0.2
 #        env:
-#          PYO3_CROSS_LIB_DIR: /opt/python/${{ matrix.python.abi }}/lib
+#          GITHUB_TOKEN: ${{ secrets.PAT }}
 #        with:
-#          manylinux: auto
-#          command: build
-#          args: -i python${{ matrix.python.version }} --release --out dist --no-sdist
-#          target: ${{ matrix.target }}
-##      - uses: uraimo/run-on-arch-action@v2.0.5
-##        if: matrix.target != 'ppc64'
-##        name: Install built wheel
-##        with:
-##          arch: ${{ matrix.target }}
-##          distro: ubuntu18.04
-##          githubToken: ${{ github.token }}
-##          # Mount the dist directory as /artifacts in the container
-##          dockerRunArgs: |
-##            --volume "${PWD}/dist:/artifacts"
-##          install: |
-##            apt-get update
-##            apt-get install -y --no-install-recommends python3 python3-pip
-##            pip3 install -U pip pytest
-##          run: |
-##            ls -lrth /artifacts
-##            pip3 install rjmespath --no-index --find-links /artifacts --force-reinstall
-##            cd tests && pytest
-#      - name: Upload wheels
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: wheels
-#          path: dist
-#
-#  release:
-#    name: Release
-#    runs-on: ubuntu-latest
-##    if: "startsWith(github.ref, 'refs/tags/')"
-#    needs: [ non-linux, manylinux ]
-#    steps:
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: wheels
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: 3.9
-#      - name: Publish to PyPi
+#          upload_url: ${{ github.event.release.upload_url }}
+#          asset_path: /${{ steps.pack-deb.outputs.deb_path }}
+#          asset_name: ${{ steps.pack-deb.outputs.deb_file }}
+#          asset_content_type: application/octet-stream
+#      - run: |
+#          set -x
+#          assets=()
+#          for asset in build/stage/${{ github.event.release.tag_name }}; do
+#            assets+=("-a" "$asset")
+#          done
+#          tag_name="${GITHUB_REF##*/}"
+#          hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
 #        env:
-#          TWINE_USERNAME: __token__
-#          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-#        run: |
-#          pip install --upgrade twine
-#          twine upload --skip-existing *
+#          GITHUB_TOKEN: ${{ secrets.PAT }}
+#        build/stage/v0.0.1-alpha.1/node-v93-darwin-x64.tar.gz
+
+  publish-to-npm-with-artifacts:
+    runs-on: ubuntu-latest
+    needs: [build_and_upload_artifacts]
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: npm install cargo-cp-artifact --global
+      - run: npm install node-pre-gyp --global
+      - run: npm run build
+      - run: npm run publish
+
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
+        run: npm publish --access public
+
