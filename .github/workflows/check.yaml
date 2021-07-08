@@ -60,6 +60,7 @@ jobs:
       - uses: Swatinem/rust-cache@v1
 
       - run: npm install cargo-cp-artifact --global
+      - run: npm install node-pre-gyp --global
       - run: npm run build
       - run: npm run package
 
