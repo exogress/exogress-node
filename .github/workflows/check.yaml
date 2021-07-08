@@ -58,8 +58,10 @@ jobs:
           override: true
 
       - uses: Swatinem/rust-cache@v1
+
       - run: npm install
-      - run: npm package
+      - run: npm run build
+      - run: npm run package
 
 #
 #  manylinux:
