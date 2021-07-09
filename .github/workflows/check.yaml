@@ -94,6 +94,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
 
 #      - run: npm install cargo-cp-artifact --global
 #      - run: npm install node-pre-gyp --global
