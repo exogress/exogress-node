@@ -570,6 +570,7 @@ dependencies = [
  "hashbrown",
  "log",
  "neon",
+ "neon-build",
  "parking_lot",
  "tokio",
  "trust-dns-resolver",

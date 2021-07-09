@@ -1,41 +1,41 @@
 {
-  "name": "exogress",
-  "version": "0.0.1-alpha.1",
-  "description": "Exogress client for Ruby",
+  "name": "@exogress/exogress",
+  "version": "0.0.1-alpha.7",
+  "description": "Exogress client for Node JS",
   "main": "index.js",
   "scripts": {
-    "build": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics",
-    "install": "node-pre-gyp install --fallback-to-build=false || neon build --release",
+    "build": "cd native && cargo build --release",
+    "install": "node-pre-gyp install --fallback-to-build=false || (cd native && cargo build --release)",
     "package": "node-pre-gyp package",
-    "upload-binary": "node-pre-gyp package && node-pre-gyp-github publish",
-    "test": "cargo test"
+    "upload-binary": "node-pre-gyp package && node-pre-gyp-github publish"
   },
   "author": "Exogress Team",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "cargo-cp-artifact": "^0.1",
-    "node-pre-gyp-github": "^1.4.3"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/exogress/exogress-node.git"
   },
   "files": [
-    "lib"
+    "lib",
+    "native/src",
+    "native/build.rs",
+    "native/Cargo.lock",
+    "native/Cargo.toml"
   ],
   "bugs": {
     "url": "https://github.com/exogress/exogress-node/issues"
   },
   "homepage": "https://github.com/exogress/exogress-node#readme",
   "dependencies": {
-    "node-pre-gyp": "^0.17.0"
+    "@exogress/exogress": "^0.0.1-alpha.7",
+    "@mapbox/node-pre-gyp": "^1.0.4"
   },
   "binary": {
     "module_name": "index",
     "host": "https://github.com/exogress/exogress-node/releases/download/",
     "remote_path": "v{version}",
     "package_name": "{node_abi}-{platform}-{arch}.tar.gz",
-    "module_path": ".",
+    "module_path": "./native",
     "pkg_path": "."
   }
 }

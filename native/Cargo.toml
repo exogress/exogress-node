@@ -5,9 +5,11 @@ description = "Exogress client for Ruby"
 authors = ["Exogress Team"]
 license = "Apache-2.0"
 edition = "2018"
-exclude = ["index.node"]
+build = "build.rs"
+exclude = ["index.node", "artifacts.json"]
 
 [lib]
+name = "exogress"
 crate-type = ["cdylib"]
 
 [dependencies.neon]
@@ -25,3 +27,5 @@ anyhow = "1.0.41"
 log = "0.4.14"
 parking_lot = "0.11.1"
 
+[build-dependencies]
+neon-build = "0.8"
