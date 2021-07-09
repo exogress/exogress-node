@@ -24,15 +24,14 @@ jobs:
       - uses: Swatinem/rust-cache@v1
 
       - name: Lint with rustfmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
+        working-directory: native
+        run: |
+          cargo fmt
 
-      - name: Lint with clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets --all-features
+      - name: Lint with rustfmt
+        working-directory: native
+        run: |
+          cargo clippy --all-targets --all-features
 
   build_and_upload_artifacts:
     runs-on: ${{ matrix.os }}
@@ -95,10 +94,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
 #      - run: npm install cargo-cp-artifact --global
 #      - run: npm install node-pre-gyp --global
 #      - run: npm run build
-      - run: npm run publish
 
       - name: Publish
         env:
