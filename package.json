@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/exogress/exogress-node#readme",
   "dependencies": {
-    "@exogress/exogress": "^0.0.1-alpha.7",
     "@mapbox/node-pre-gyp": "^1.0.4"
   },
   "binary": {
