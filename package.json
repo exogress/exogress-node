@@ -1,12 +1,12 @@
 {
   "name": "@exogress/exogress",
-  "version": "0.0.1-alpha.8",
+  "version": "0.0.1-alpha.9",
   "description": "Exogress client for Node JS",
   "main": "lib/index.js",
   "scripts": {
     "build": "cd native && cargo build --release",
     "install": "node-pre-gyp install --fallback-to-build=false || (cd native && cargo build --release)",
-    "package": "node-pre-gyp package",
+    "package": "rm -rf native/target && node-pre-gyp package",
     "upload-binary": "node-pre-gyp package && node-pre-gyp-github publish"
   },
   "author": "Exogress Team",
