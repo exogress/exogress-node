@@ -46,7 +46,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
         with:
-          submodules: true
+          submodules: tr§ue
 
       - uses: actions/setup-node@v2
         with:
@@ -60,18 +60,19 @@ jobs:
 
       - uses: Swatinem/rust-cache@v1
 
-      - run: npm install cargo-cp-artifact --global
-      - run: npm install node-pre-gyp --global
       - run: npm run build
-
+      - run: rm -rf native/target
       - name: build-package
+        run: npm run package
+
+      - name: extract-package-path
         run: |
-          OUTPUT_PATH=$(npm run package 2>&1|grep "build/stage"|sed -E "s/.+(build\/stage\/v.+\/node-.+.tar.gz).+/\1/")
+          OUTPUT_PATH=$(ls build/stage/${{ github.event.release.tag_name }})
           echo "::set-output name=pre-package-path::$OUTPUT_PATH"
 
       - name: extract-filename
         run: |
-          ASSET_NAME='basename ${{ steps.build-package.outputs.pre-package-path }}"'
+          ASSET_NAME='basename ${{ steps.extract-package-path.outputs.pre-package-path }}"'
           echo "::set-output name=asset-name::$ASSET_NAME"
 
       - name: Upload release deb
@@ -80,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.build-package.outputs.pre-package-path }}
+          asset_path: ${{ steps.extract-package-path.outputs.pre-package-path }}
           asset_name: ${{ steps.extract-filename.outputs.asset-name }}
           asset_content_type: application/octet-stream
 
