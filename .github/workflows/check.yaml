@@ -61,6 +61,7 @@ jobs:
       - uses: Swatinem/rust-cache@v1
 
       - run: npm run build
+      - run: npm install node-pre-gyp --global
       - run: rm -rf native/target
       - name: build-package
         run: npm run package
