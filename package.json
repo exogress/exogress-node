@@ -1,8 +1,8 @@
 {
   "name": "@exogress/exogress",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-alpha.8",
   "description": "Exogress client for Node JS",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "cd native && cargo build --release",
     "install": "node-pre-gyp install --fallback-to-build=false || (cd native && cargo build --release)",
