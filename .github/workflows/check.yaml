@@ -102,10 +102,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-#      - run: npm install cargo-cp-artifact --global
-#      - run: npm install node-pre-gyp --global
-#      - run: npm run build
-
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
