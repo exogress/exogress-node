@@ -66,19 +66,21 @@ jobs:
 
       - run: npm run build
       - run: npm install node-pre-gyp --global
+
       - uses: JesseTG/rm@v1.0.2
         with:
           path: native/target
+
       - name: build-package
         run: npm run package
 
       - run: node ci/ci.js asset_path
       - run: node ci/ci.js asset_name
 
-      - name: extract-package-path
+      - id: extract-package-path
         run: echo "::set-output name=pre-package-path::$(node ci/ci.js asset_path)"
 
-      - name: extract-filename
+      - id: extract-filename
         run: echo "::set-output name=asset-name::$(node ci/ci.js asset_name)"
 
       - name: Upload release deb
