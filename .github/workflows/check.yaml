@@ -72,15 +72,14 @@ jobs:
       - name: build-package
         run: npm run package
 
+      - run: node ci/ci.js asset_path
+      - run: node ci/ci.js asset_name
+
       - name: extract-package-path
-        run: |
-          OUTPUT_PATH=$(node ci/ci.js asset_path)
-          echo "::set-output name=pre-package-path::$OUTPUT_PATH"
+        run: echo "::set-output name=pre-package-path::$(node ci/ci.js asset_path)"
 
       - name: extract-filename
-        run: |
-          ASSET_NAME=$(node ci/ci.js asset_name)
-          echo "::set-output name=asset-name::$ASSET_NAME"
+        run: echo "::set-output name=asset-name::$(node ci/ci.js asset_name)"
 
       - name: Upload release deb
         uses: actions/upload-release-asset@v1.0.2
