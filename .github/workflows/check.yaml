@@ -79,7 +79,7 @@ jobs:
 
       - name: extract-filename
         run: |
-          ASSET_NAME='node ci/ci.js asset_name'
+          ASSET_NAME=$(node ci/ci.js asset_name)
           echo "::set-output name=asset-name::$ASSET_NAME"
 
       - name: Upload release deb
